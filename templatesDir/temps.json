@@ -1,0 +1,14 @@
+[
+    {
+        "templateText": "some text here",
+        "templateStatus": "Done"
+    },
+    {
+        "templateText": "some other text here",
+        "templateStatus": "Editable"
+    },
+    {
+        "templateText": "third text here",
+        "templateStatus": "Done"
+    }
+]

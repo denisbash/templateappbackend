@@ -1,0 +1,77 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c14c668f11e6a658fa9dc5c7e46c81da4ae50af403bf0913a891502dea2d755b
+
+name:           webappbackend
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/webappbackend#readme>
+homepage:       https://github.com/githubuser/webappbackend#readme
+bug-reports:    https://github.com/githubuser/webappbackend/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2021 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/webappbackend
+
+library
+  exposed-modules:
+      Lib,
+      MDB,
+      TempTypes
+  other-modules:
+      Paths_webappbackend
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5,
+      aeson,
+      containers,
+      text,
+      wai,
+      wai-cors,
+      warp,
+      servant,
+      servant-server,
+      servant-client,
+      mongoDB
+  default-language: Haskell2010
+
+executable webappbackend-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_webappbackend
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5,
+      wai,
+      warp,
+      mongoDB,
+      webappbackend
+  default-language: Haskell2010
+
+test-suite webappbackend-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_webappbackend
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , webappbackend
+  default-language: Haskell2010

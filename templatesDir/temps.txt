@@ -1,0 +1,3 @@
+
+
+[Template {templateText = "templateN1", templateStatus = Done},Template {templateText = "templateN2", templateStatus = Editable}]
