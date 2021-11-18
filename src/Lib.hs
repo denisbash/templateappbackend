@@ -25,7 +25,7 @@ import Control.Monad.IO.Class (MonadIO(liftIO))
 import Network.Wai.Middleware.Cors (simpleCors, CorsResourcePolicy (corsMethods, corsRequestHeaders, corsOrigins), cors, simpleCorsResourcePolicy)
 import Network.Wai (Middleware)
 
-import TempTypes ( Message(Message), Template )
+import TempTypes ( Message(Message), NamedTemplate )
 import MDB (insertTemplates, fromDBType, allTemplates)
 import Database.MongoDB (Action)
 import Data.Maybe (catMaybes, mapMaybe)
@@ -52,10 +52,10 @@ instance ToJSON User
 
 
 type TemplateAPI = "templates" :> Raw
-    :<|> "newtemplates" :> ReqBody '[JSON] [Template] :> Post '[JSON] Message
+    :<|> "newtemplates" :> ReqBody '[JSON] [NamedTemplate] :> Post '[JSON] Message
 
-type TemplateDBAPI = "templates" :> Get '[JSON] [Template]
-    :<|> "templates" :> ReqBody '[JSON] [Template] :> Post '[JSON] Message
+type TemplateDBAPI = "templates" :> Get '[JSON] [NamedTemplate]
+    :<|> "templates" :> ReqBody '[JSON] [NamedTemplate] :> Post '[JSON] Message
 
 
 isaac :: User
@@ -88,7 +88,7 @@ serverTemplate :: Server TemplateAPI
 serverTemplate = serveDirectoryWebApp "templatesDir"
     :<|> saveTemplates
     where
-        saveTemplates :: [Template] -> Handler Message
+        saveTemplates :: [NamedTemplate] -> Handler Message
         saveTemplates tmps = do
             liftIO $ appendFile "templatesDir/temps.txt" $ "\n" ++ show tmps
             return $ Message "Oh, yeah"
@@ -109,12 +109,12 @@ corsPolicy = cors (const $ Just policy)
 serverTemplateMDB :: (forall a. Action IO a -> IO a) -> Server TemplateDBAPI
 serverTemplateMDB dbContext = getTemplatesDB
     :<|> saveTemplatesDB
-    where saveTemplatesDB :: [Template] -> Handler Message
+    where saveTemplatesDB :: [NamedTemplate] -> Handler Message
           saveTemplatesDB tmps = do
               liftIO $ insertTemplates dbContext tmps
               return $ Message "Oh, yeah MDB"
 
-          getTemplatesDB :: Handler [Template]
+          getTemplatesDB :: Handler [NamedTemplate]
           getTemplatesDB = do
               docs <- liftIO $ allTemplates dbContext
               return $ mapMaybe fromDBType docs

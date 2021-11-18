@@ -1,8 +1,9 @@
 {-# LANGUAGE DeriveGeneric #-}
 module TempTypes (
-    Template(..),
+    NamedTemplate(..),
     Message(..),
     Status(..),
+    Template(..),
     readStatus
 ) where
 
@@ -11,9 +12,12 @@ import Data.Aeson.Types (ToJSON, FromJSON)
 
 data Status = Done | Editable deriving (Eq, Show, Generic)
 
-data Template = Template{
-    templateText :: String,
-    templateStatus :: Status} deriving (Eq, Show, Generic)
+data NamedTemplate = NamedTemplate{
+    templateName :: String,
+    templateStatus :: Status,
+    template :: Template} deriving (Eq, Show, Generic)
+
+data Template = V String | L [Template] deriving (Eq, Show, Generic)
 
 newtype Message = Message{
     txt :: String
@@ -22,9 +26,12 @@ newtype Message = Message{
 instance ToJSON Message
 
 instance ToJSON Status
-instance ToJSON Template
+instance ToJSON NamedTemplate
 
 instance FromJSON Status
+instance FromJSON NamedTemplate
+
+instance ToJSON Template
 instance FromJSON Template
 
 readStatus :: String -> Maybe Status
