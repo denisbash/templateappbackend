@@ -2,8 +2,7 @@
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE RankNTypes #-}
 
-module MDB (
-    mainDB,
+module MDB (    
     insertTemplates,
     allTemplates,
     fromDBType
@@ -34,20 +33,6 @@ instance Val Template where
    cast' _ = Nothing
 
 
-
-mainDB :: IO ()
-mainDB = do
-   pipe <- connect (host "127.0.0.1")
-   e <- access pipe master "baseball" insertTeams
-   close pipe
-   print e
-
-insertTeams :: Action IO [Value]
-insertTeams = insertMany "team" [
-   ["name" =: "Yankees", "home" =: ["city" =: "New York", "state" =: "NY"], "league" =: "American"],
-   ["name" =: "Mets", "home" =: ["city" =: "New York", "state" =: "NY"], "league" =: "National"],
-   ["name" =: "Phillies", "home" =: ["city" =: "Philadelphia", "state" =: "PA"], "league" =: "National"],
-   ["name" =: "Red Sox", "home" =: ["city" =: "Boston", "state" =: "MA"], "league" =: "American"] ]
 
 insertTemplates :: (Action IO [Value] -> IO [Value]) -> [Template] -> IO [Value]
 insertTemplates dbContext templates = dbContext $ insertMany "test_templates" $ map toMDBType templates

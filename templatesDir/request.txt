@@ -1,1 +1,1 @@
-curl --header "Content-Type: application/json" --data '[{"templateText":"title1", "templateStatus": "Done"}, {"templateText":"title2", "templateStatus": "Editable"}]'  http://localhost:8081/newtemplates
+curl --header "Content-Type: application/json" --data '[{"templateText":"title1", "templateStatus": "Done"}, {"templateText":"title2", "templateStatus": "Editable"}]'  http://127.0.0.1:8081/newtemplates

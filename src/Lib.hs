@@ -8,8 +8,7 @@
 
 
 
-module Lib
-    (
+module Lib (
         app1,
         appTemplate,
         appTemplateMDB
