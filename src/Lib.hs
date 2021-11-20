@@ -21,9 +21,13 @@ import Data.Aeson.Types (ToJSON, FromJSON)
 import GHC.Generics (Generic)
 import qualified Data.Text as T
 import Servant.Server.Internal.Handler (Handler)
+import Servant.API.WebSocket
 import Control.Monad.IO.Class (MonadIO(liftIO))
+import Control.Monad (forever)
 import Network.Wai.Middleware.Cors (simpleCors, CorsResourcePolicy (corsMethods, corsRequestHeaders, corsOrigins), cors, simpleCorsResourcePolicy)
 import Network.Wai (Middleware)
+import Network.WebSockets (Connection(..), sendTextData, withPingThread)
+import Control.Concurrent(threadDelay)
 
 import TempTypes ( Message(Message), NamedTemplate )
 import MDB (insertTemplates, fromDBType, allTemplates)
@@ -56,6 +60,7 @@ type TemplateAPI = "templates" :> Raw
 
 type TemplateDBAPI = "templates" :> Get '[JSON] [NamedTemplate]
     :<|> "templates" :> ReqBody '[JSON] [NamedTemplate] :> Post '[JSON] Message
+    :<|> "stream" :> WebSocket
 
 
 isaac :: User
@@ -109,6 +114,7 @@ corsPolicy = cors (const $ Just policy)
 serverTemplateMDB :: (forall a. Action IO a -> IO a) -> Server TemplateDBAPI
 serverTemplateMDB dbContext = getTemplatesDB
     :<|> saveTemplatesDB
+    :<|> streamData
     where saveTemplatesDB :: [NamedTemplate] -> Handler Message
           saveTemplatesDB tmps = do
               liftIO $ insertTemplates dbContext tmps
@@ -118,6 +124,18 @@ serverTemplateMDB dbContext = getTemplatesDB
           getTemplatesDB = do
               docs <- liftIO $ allTemplates dbContext
               return $ mapMaybe fromDBType docs
+
+          streamData :: MonadIO m => Connection -> m ()
+          streamData conn = do
+              liftIO $ forever $ do
+                  docs <- allTemplates dbContext
+                  let tmps = mapMaybe fromDBType docs
+                  sendTextData conn (T.pack . show $ tmps)
+                  threadDelay 30000000              
+              --liftIO $ withPingThread conn 30 (return ()) $ do
+                --  docs <- liftIO $ allTemplates dbContext
+                --  let tmps = mapMaybe fromDBType docs
+                --  forever $ sendTextData conn (T.pack . show $ tmps)
 
 
 appTemplateMDB :: (forall a. Action IO a -> IO a) -> Application
