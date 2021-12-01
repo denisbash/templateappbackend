@@ -1,11 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
+
 module Main where
 
 import Lib (app1, appTemplate, appTemplateMDB)
 import Network.Wai.Handler.Warp (run)
 import Database.MongoDB.Connection ( connect, host, close )
-import Database.MongoDB.Query (access, master)
+import Database.MongoDB.Query (access, master, save)
+import Data.Functor.Identity (Identity (runIdentity, Identity))
+import Data.Maybe (isNothing)
 
 main :: IO ()
 main = mainMDB--run 8081 appTemplate--app1
@@ -16,5 +19,5 @@ mainMDB = do
     let dbContext = access pipe master "templates"
     run 8081 $ appTemplateMDB dbContext
     close pipe
-    
+
 

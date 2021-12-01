@@ -132,11 +132,6 @@ serverTemplateMDB dbContext = getTemplatesDB
                   let tmps = mapMaybe fromDBType docs
                   sendTextData conn (T.pack . show $ tmps)
                   threadDelay 30000000              
-              --liftIO $ withPingThread conn 30 (return ()) $ do
-                --  docs <- liftIO $ allTemplates dbContext
-                --  let tmps = mapMaybe fromDBType docs
-                --  forever $ sendTextData conn (T.pack . show $ tmps)
-
-
+             
 appTemplateMDB :: (forall a. Action IO a -> IO a) -> Application
 appTemplateMDB dbContext = corsPolicy $ serve templateDBAPI (serverTemplateMDB dbContext)

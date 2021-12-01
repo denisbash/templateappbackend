@@ -1,7 +1,7 @@
 curl --header "Content-Type: application/json" --data '[{"templateName":"tmp1", "templateStatus": "Done", "template" : {"contents": "some text here", "tag": "V"}}, {"templateName":"tmp2", "templateStatus": "Editable", "template": {"contents": "some other text here", "tag": "V"}}]'  http://127.0.0.1:8081/templates
 
 // js console code
-socket = new WebSocket('ws://localhost:8080/game');
+socket = new WebSocket('ws://localhost:8081/stream');
 socket.addEventListener('open', function (event) {
     socket.send('Hello Server!');
 });
