@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module MDB (
     insertTemplates,
@@ -12,7 +13,7 @@ import Database.MongoDB ( (=:), insertMany, Value (Doc, String, Array), Action, 
 
 import Database.MongoDB.Query (access, master, find, rest, Select (select))
 import Database.MongoDB.Connection ( connect, host, close )
-import TempTypes (NamedTemplate(..), Status(..), readStatus, Template (..))
+import TempTypes (NamedTemplate(..), Status(..), readStatus, Template (..), Template' (V, L))
 import qualified Data.Text as T
 
 
